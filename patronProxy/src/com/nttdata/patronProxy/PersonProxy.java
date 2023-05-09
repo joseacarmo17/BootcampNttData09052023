@@ -1,35 +1,48 @@
 package com.nttdata.patronProxy;
 
-public class PersonProxy implements Person {
-    private RealPerson realPerson;
-    private String username;
-    private String password;
-    
-    public PersonProxy(String name, int age, String username, String password) {
-        this.realPerson = new RealPerson(name, age);
-        this.username = username;
-        this.password = password;
+public class PersonProxy implements IPerson {
+    private Person person;
+
+    public PersonProxy(Person person) {
+        this.person = person;
     }
-    
+
+    @Override
     public String getName() {
-        if (this.isAuthenticated()) {
-            return this.realPerson.getName();
-        } else {
-            return "Access Denied";
-        }
+        before();
+        String name = person.getName();
+        after();
+        return name;
     }
-    
+
+    @Override
     public int getAge() {
-        if (this.isAuthenticated()) {
-            return this.realPerson.getAge();
-        } else {
-            return 0;
-        }
+        before();
+        int age = person.getAge();
+        after();
+        return age;
     }
-    
-    private boolean isAuthenticated() {
-        // Aquí podrías implementar la lógica para autenticar al usuario
-        // en base a las credenciales proporcionadas en el constructor.
-        return true;
+
+    @Override
+    public void setName(String name) {
+        before();
+        person.setName(name);
+        after();
+    }
+
+    @Override
+    public void setAge(int age) {
+        before();
+        person.setAge(age);
+        after();
+    }
+
+    private void before() {
+        System.out.println("Before method call");
+    }
+
+    private void after() {
+        System.out.println("After method call");
     }
 }
+
